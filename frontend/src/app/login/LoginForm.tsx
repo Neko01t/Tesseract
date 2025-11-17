@@ -4,9 +4,11 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import SocialLogin from "@/components/SocialLogin";
-import Link from "next/link"; 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [useAadhaar, setUseAadhaar] = useState(false);
 
   return (
@@ -22,22 +24,20 @@ export default function LoginForm() {
 
       <div className="flex justify-center gap-8 mt-4 mb-6 text-sm font-medium text-gray-600">
         <button
-          className={`pb-1 ${
-            !useAadhaar
+          className={`pb-1 ${!useAadhaar
               ? "text-blue-600 border-b-2 border-blue-600"
               : "text-gray-500"
-          }`}
+            }`}
           onClick={() => setUseAadhaar(false)}
         >
           Email Login
         </button>
 
         <button
-          className={`pb-1 ${
-            useAadhaar
+          className={`pb-1 ${useAadhaar
               ? "text-blue-600 border-b-2 border-blue-600"
               : "text-gray-500"
-          }`}
+            }`}
           onClick={() => setUseAadhaar(true)}
         >
           Aadhaar Login
@@ -57,7 +57,10 @@ export default function LoginForm() {
             <a className="text-blue-600 cursor-pointer">Forgot Password?</a>
           </div>
 
-          <Button text="Log In" />
+          <Button
+            text="Log In"
+            onClick={() => router.push("/")}
+          />
         </>
       )}
 
@@ -81,8 +84,8 @@ export default function LoginForm() {
 
       <div className="text-center text-sm mt-6 text-gray-600">
         New member? <Link href="/register" className="text-blue-600 cursor-pointer">
-  Register Now
-</Link>
+          Register Now
+        </Link>
 
       </div>
     </div>

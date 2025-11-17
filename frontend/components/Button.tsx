@@ -9,3 +9,4 @@ export default function Button({ text, className = "", ...props }: any) {
     </button>
   );
 }
+

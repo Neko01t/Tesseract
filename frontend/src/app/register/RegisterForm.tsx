@@ -4,8 +4,10 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -22,7 +24,6 @@ export default function RegisterForm() {
   return (
     <div className="bg-white shadow-[0_4px_30px_rgba(0,0,0,0.1)] p-10 rounded-2xl w-full max-w-md border border-gray-200">
 
-      {/* Logo */}
       <div className="flex flex-col items-center mb-3">
         <img src="/logo.png" alt="IPDI" className="h-12 mb-2" />
         <h2 className="text-xl font-semibold text-gray-800">
@@ -31,7 +32,6 @@ export default function RegisterForm() {
         <p className="text-gray-600 text-sm">Register to continue</p>
       </div>
 
-      {/* Form Inputs */}
       <div className="grid grid-cols-2 gap-4">
         <Input
           label="First Name"
@@ -79,10 +79,11 @@ export default function RegisterForm() {
         onChange={handleChange}
       />
 
-      {/* Create Account Button */}
-      <Button text="Create Account" className="mt-4" />
+      <Button
+        text="Create Account"
+        onClick={() => router.push("/onboarding")}
+      />
 
-      {/* Divider */}
       <div className="text-center text-sm mt-6 text-gray-600">
         Already have an account?{" "}
         <Link className="text-blue-600" href="/login">

@@ -8,14 +8,14 @@ export default function Onboarding() {
   const router = useRouter();
 
   const cardClasses = (type: string) =>
-    `border rounded-xl p-5 cursor-pointer transition w-52 
+    `border rounded-xl p-5 cursor-pointer transition w-52
      ${selected === type ? "border-blue-600 shadow-md" : "border-gray-300"}
     `;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-10 max-w-3xl w-full">
-        
+
         {/* Top Image */}
         <div className="flex justify-center mb-6">
           <img src="/onboard-img.png" className="h-40" />
@@ -26,7 +26,7 @@ export default function Onboarding() {
           Account Type
         </h2>
         <p className="text-center text-gray-600 max-w-md mx-auto mt-1">
-          Choose the account type that suits your needs.  
+          Choose the account type that suits your needs.
           Each has a different set of tools and features.
         </p>
 

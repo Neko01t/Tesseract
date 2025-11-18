@@ -1,3 +1,8 @@
-MONGO_URI = "mongodb+srv://l4nc3r03_db_user:YwgvcWJ9jRx7Utuc@cluster0.mongodb.net/"
-DB_NAME = "ipdi_db"
-JWT_SECRET = "YOUR_SECRET_KEY_CHANGE_THIS"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("DB_NAME")
+JWT_SECRET = os.getenv("JWT_SECRET")

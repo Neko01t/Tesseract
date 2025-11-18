@@ -5,7 +5,6 @@ from app.utils.token_utils import generate_token
 
 auth_bp = Blueprint("auth", __name__)
 
-# -------------------- REGISTER --------------------
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.json
@@ -28,7 +27,6 @@ def register():
     return jsonify({"message": "User registered", "token": token}), 201
 
 
-# -------------------- LOGIN --------------------
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json

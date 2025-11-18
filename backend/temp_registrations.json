@@ -1,0 +1,10 @@
+[
+    {
+        "first_name": "test",
+        "last_name": "test",
+        "email": "test@test.com",
+        "aadhaar": "123456789012",
+        "password": "$2b$12$.8MjWYhPodgSUOAbIev9TejRZ6UYKpo/mp689rYe/E1VN.Flb5XN.",
+        "account_type": null
+    }
+]

@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.database import users_collection
+# Import the collection and the flag to check if we are online
+from app.database import users_collection, mongo_connected
 from app.utils.password_utils import hash_password, verify_password
 from app.utils.token_utils import generate_token
+# Import the fallback functions
 from app.utils.file_utils import save_user_temporarily, load_data_from_json
 
 auth_bp = Blueprint("auth", __name__)
@@ -10,44 +12,83 @@ auth_bp = Blueprint("auth", __name__)
 def register():
     data = request.json
 
-    if users_collection.find_one({"email": data["email"]}):
-        return jsonify({"error": "Email already registered"}), 409
-
     hashed_password_bytes = hash_password(data["password"])
     hashed_password_str = hashed_password_bytes.decode('utf-8')
-    user = {
+
+    new_user = {
         "first_name": data["first_name"],
         "last_name": data["last_name"],
         "email": data["email"],
-        "aadhaar": data["aadhaar"],
+        "aadhaar": data.get("aadhaar"),
         "password": hashed_password_str,
-        "account_type": None
+        "account_type": None,
+        "storage_source": "mongodb" # helpful to track where data lives
     }
 
-    success = save_user_temporarily(user)
+    if mongo_connected and users_collection is not None:
+        try:
+            if users_collection.find_one({"email": data["email"]}):
+                return jsonify({"error": "Email already registered (found in DB)"}), 409
 
+            result = users_collection.insert_one(new_user)
+            user_id = str(result.inserted_id)
+            token = generate_token(user_id)
+
+            return jsonify({
+                "message": "User registered successfully in MongoDB",
+                "token": token,
+                "source": "database"
+            }), 201
+        except Exception as e:
+            print(f"Mongo Error during write: {e}. Falling back to JSON.")
+    new_user["storage_source"] = "json_backup"
+    success = save_user_temporarily(new_user)
     if not success:
-        # save_user_temporarily returns False if email already exists
-        return jsonify({"error": "Email already registered"}), 409
+        return jsonify({"error": "Email already registered (found in Backup)"}), 409
+    token = generate_token(new_user["email"])
+    return jsonify({
+        "message": "Database offline. User saved to local backup file.",
+        "token": token,
+        "source": "json_file"
+    }), 201
 
-    # 3. If successful, generate a mock ID for the token (since we don't have a Mongo ID)
-    # In a JSON file, generating a token requires a unique ID. Using the email as a placeholder ID.
-    token = generate_token(user["email"])
-
-    return jsonify({"message": "User registered (saved to JSON file)", "token": token}), 201
-
-@auth_bp.route("/login", methods=["post"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
-    all_users = load_data_from_json()
+    email = data.get("email")
+    password = data.get("password")
 
-    user = next((u for u in all_users if u["email"] == data["email"]), None)
+    user_found = None
+    source = ""
 
-    if not user:
-        return jsonify({"error": "invalid email or password"}), 401
+    if mongo_connected and users_collection is not None:
+        try:
+            user_found = users_collection.find_one({"email": email})
+            if user_found:
+                source = "database"
+        except Exception as e:
+            print(f"Mongo read error: {e}")
 
-    if not verify_password(data["password"], user["password"]):
-        return jsonify({"error": "invalid email or password"}), 401
+    if not user_found:
+        all_json_users = load_data_from_json()
+        user_found = next((u for u in all_json_users if u["email"] == email), None)
+        if user_found:
+            source = "json_file"
+    if not user_found:
+        return jsonify({"error": "Invalid email or password"}), 401
 
-    token = generate_token(user["email"])
-    return jsonify({"message": "login successful", "token": token}), 200
+    if not verify_password(password, user_found["password"]):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    if source == "database":
+        user_id = str(user_found["_id"])
+    else:
+        user_id = user_found["email"]
+
+    token = generate_token(user_id)
+
+    return jsonify({
+        "message": "Login successful",
+        "token": token,
+        "source": source
+    }), 200

@@ -1,32 +1,43 @@
 import os
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from app.config import MONGO_URI, DB_NAME
 from dotenv import load_dotenv
 load_dotenv()
 
-client = MongoClient(os.getenv(MONGO_URI))
-db = client[DB_NAME]
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("DB_NAME", "test_db")
 
-users_collection = db["users"]
-try:
-    # Initialize the client. The URI includes authentication and connection details.
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+# Global variable to hold the collection
+users_collection = None
+mongo_connected = False
 
-    # The database object (accesses the specific database in the cluster)
-    db = client[DB_NAME]
+def init_db():
+    """
+    Attempts to connect to MongoDB.
+    Returns user_collection if successful, None if failed.
+    """
+    global users_collection
+    global mongo_connected
 
-    # Ping the server to check connection immediately (can raise ServerSelectionTimeoutError)
-    client.admin.command('ping')
-    print("Successfully connected to MongoDB!")
+    try:
+        print(f"Attempting to connect to MongoDB at: {MONGO_URI}...")
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=3000)
 
-    # Expose the specific collection used in the auth_routes
-    users_collection = db["users"]
+        client.admin.command('ping')
 
-except ConnectionError as e:
-    # This catches errors where the URI is wrong or the server is truly unavailable
-    print(f"FATAL ERROR: Could not connect to MongoDB at {MONGO_URI}. Details: {e}")
-    # In a real app, you might stop the application here or use a fallback.
-    users_collection = None
-except Exception as e:
-    print(f"An unexpected error occurred during MongoDB setup: {e}")
-    users_collection = None
+        db = client[DB_NAME]
+        users_collection = db["users"]
+        mongo_connected = True
+        print(f" SUCCESS: Connected to MongoDB Database: {DB_NAME}")
+        return users_collection
+
+    except (ConnectionFailure, ServerSelectionTimeoutError) as e:
+        print(f" WARNING: MongoDB Connection Failed. Switching to JSON fallback mode.")
+        print(f"Error details: {e}")
+        users_collection = None
+        mongo_connected = False
+        return None
+
+# Initialize immediately when this file is imported
+init_db()

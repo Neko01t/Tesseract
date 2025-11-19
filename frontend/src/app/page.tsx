@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut, Loader2, Server, ShieldCheck } from 'lucide-react';
 import { useRouter } from "next/navigation";
-import Button from '../../components/Button.tsx'
+import Button from "@/components/Button";
 
 export default function MainPage() {
   const [message, setMessage] = useState('');

@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function PropertyDetail({ params }: any) {
-  // In App Router you can use params.id; here we simulate using the id from props
-  // If using server components, fetch server-side. For client demo:
   const router = useRouter();
   const id = params?.id ?? "1";
 
@@ -19,7 +17,7 @@ export default function PropertyDetail({ params }: any) {
       id,
       propertyId: "PRID-KA-BLR-123",
       title: "Residential Plot",
-      owner: "Amit Kumar",
+      owner: "Piyush Sontakke",
       size: "1200 sq ft",
       survey: "45/2B",
       address: "MG Road, Bangalore",

@@ -18,7 +18,7 @@ import Link from "next/link";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "My Properties", icon: Home, href: "/property" },
+  { label: "Find Properties", icon: Home, href: "/sale" },
   { label: "Transfers", icon: RefreshCcw, href: "/transfers" },
   { label: "Verification", icon: ShieldCheck, href: "/verification" },
   { label: "Profile", icon: User, href: "/profile" },

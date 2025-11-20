@@ -18,7 +18,7 @@ export default function Onboarding() {
 
         {/* Top Image */}
         <div className="flex justify-center mb-6">
-          <img src="/onboard-img.png" className="h-40" />
+          <img src="/onboarding.jpg" className="h-40" />
         </div>
 
         {/* Title */}
@@ -77,7 +77,7 @@ export default function Onboarding() {
         {/* Next Button */}
         <div className="flex justify-center mt-10">
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/dashboard")}
             className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-10 rounded-lg"
           >
             Next

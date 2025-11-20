@@ -12,7 +12,7 @@ export default function PropertyDetail({ params }: any) {
   const [property, setProperty] = useState<any>(null);
 
   useEffect(() => {
-    
+
     setProperty({
       id,
       propertyId: "PRID-KA-BLR-SR123-abc123",

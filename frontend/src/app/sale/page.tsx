@@ -19,7 +19,7 @@ export default function PublicSalePage() {
       propertyId: "PRID-KA-BLR-001",
       location: "Bangalore",
       price: "₹ 25,00,000",
-      img: "/placeholder-property-1.jpg",
+      img: "https://www.prestigesparkgrove.info/project/residential-properties-in-bangalore.webp",
     },
     {
       id: "2",
@@ -28,7 +28,7 @@ export default function PublicSalePage() {
       propertyId: "PRID-KA-BLR-045",
       location: "BTM Layout, Bangalore",
       price: "₹ 48,00,000",
-      img: "/placeholder-property-2.jpg",
+      img: "https://img.staticmb.com/mbphoto/locality/cropped_images/2020/Oct/6/Photo_h600_w900/80384_Hawk-Eye-View_600_900.jpg",
     },
   ];
 
@@ -49,9 +49,9 @@ export default function PublicSalePage() {
               <input
                 type="text"
                 placeholder="Enter Sale ID (e.g., SLID-XXXX)"
-                className="px-4 py-2 w-60 rounded-md 
-             bg-white border border-gray-300 
-             text-gray-800 placeholder-gray-500 
+                className="px-4 py-2 w-60 rounded-md
+             bg-white border border-gray-300
+             text-gray-800 placeholder-gray-500
              focus:border-blue-600 focus:ring-2 focus:ring-blue-200
              shadow-sm"
               />

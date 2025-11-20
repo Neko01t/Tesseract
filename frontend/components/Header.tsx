@@ -56,7 +56,7 @@ export default function Header({
 
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/management.png"
               alt="IPDI Logo"
               className="h-10 w-10"
             />

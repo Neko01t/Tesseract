@@ -15,12 +15,12 @@ export default function PropertyDetail({ params }: any) {
     
     setProperty({
       id,
-      propertyId: "PRID-KA-BLR-123",
+      propertyId: "PRID-KA-BLR-SR123-abc123",
       title: "Residential Plot",
       owner: "Piyush Sontakke",
       size: "1200 sq ft",
       survey: "45/2B",
-      address: "MG Road, Bangalore",
+      address: "MG Road, Sector 69, Bangalore",
       history: [
         "2019 - Ownership registered",
         "2021 - Encumbrance clear",

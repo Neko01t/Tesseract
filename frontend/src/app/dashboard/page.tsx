@@ -26,7 +26,7 @@ export default function DashboardPage() {
 
   const user = {
     name: "Piyush Sontakke",
-    personId: "PID-MH-20-I-06-125",
+    personId: "PID:MH-20-I-06-125",
     totalProperties: 2,
     pendingTransfers: 1,
     recentActivity: [
@@ -70,7 +70,7 @@ export default function DashboardPage() {
 
           <SectionTitle title="Main Sections" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <MainButton icon={Building} label="My Properties" onClick={() => setListOpen(true)} />
+            <div><MainButton icon={Building} label="My Properties" onClick={() => setListOpen(true)} /></div>
             <MainButton icon={RefreshCcw} label="Transfer Requests" href="/transfers" />
             <MainButton icon={FileText} label="Documents" href="/documents" />
           </div>

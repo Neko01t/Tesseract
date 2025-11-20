@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -16,24 +16,80 @@ import {
   RefreshCcw,
   Map,
   FileSignature,
-  ArrowRight
-} from "lucide-react";
+  ArrowRight,
+  Loader2
+} from "lucide-react"
 
 export default function DashboardPage() {
   const [listOpen, setListOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const [mapProperty, setMapProperty] = useState<any>(null);
 
-  const user = {
-    name: "Piyush Sontakke",
-    personId: "PID:MH-20-I-06-125",
-    totalProperties: 2,
-    pendingTransfers: 1,
-    recentActivity: [
-      { id: 1, text: "Property PRID-123: Transfer Completed" },
-      { id: 2, text: "Document Signed: Sale Agreement" },
-    ],
-  };
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  const router = useRouter();
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authToken");
+    router.push("/login");
+  }, [router]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/api/user/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch user data");
+        const dbData = await res.json();
+        const formattedUser = {
+          name: `${dbData.first_name} ${dbData.last_name}`,
+          email: dbData.email,
+          personId: `PID:IND-${dbData.aadhaar ? dbData.aadhaar.slice(-4) : '0000'}`,
+          totalProperties: dbData.properties?.length || 2,
+          pendingTransfers: 1,
+          recentActivity: [
+            { id: 1, text: "Property PRID-123: Transfer Completed" },
+            { id: 2, text: "Document Signed: Sale Agreement" },
+          ],
+        };
+
+        setUser(formattedUser);
+        console.log(formattedUser)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#eef2ff]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+          <p className="text-gray-500 font-medium">Loading Dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eef2ff]">
@@ -128,8 +184,6 @@ export default function DashboardPage() {
   );
 }
 
-
-
 function StatBox({ title, value, delay }: any) {
   return (
     <motion.div
@@ -153,7 +207,7 @@ function MainButton({ icon: Icon, label, href, onClick }: any) {
       <Comp
         href={!onClick ? href : undefined}
         onClick={onClick}
-        className="bg-white/80 backdrop-blur border rounded-2xl shadow p-5 flex flex-col items-center 
+        className="bg-white/80 backdrop-blur border rounded-2xl shadow p-5 flex flex-col items-center
                  text-center hover:shadow-lg transition cursor-pointer"
       >
         <motion.div whileHover={{ rotate: 5 }}>
@@ -171,8 +225,8 @@ function QuickAction({ icon: Icon, label, href }: any) {
       href={href}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.97 }}
-      className="bg-blue-50 border border-blue-200 rounded-2xl shadow p-5 flex 
-                items-center justify-center gap-3 text-blue-900 cursor-pointer 
+      className="bg-blue-50 border border-blue-200 rounded-2xl shadow p-5 flex
+                items-center justify-center gap-3 text-blue-900 cursor-pointer
                 hover:bg-blue-100 transition"
     >
       <Icon size={22} />

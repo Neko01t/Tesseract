@@ -1,13 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import ProfileEditModal from "@/components/ProfileEditModal";
 import ConfirmActionModal from "@/components/ConfirmActionModal";
 
+import {
+  Loader2,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  ShieldCheck,
+  ShieldAlert,
+  Edit2
+} from "lucide-react";
 
 function maskAadhaar(aadhaar = "") {
   const onlyDigits = aadhaar.replace(/\D/g, "");
@@ -19,48 +31,86 @@ function maskAadhaar(aadhaar = "") {
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
-  const [editOpen, setEditOpen] = useState<null | { section: string }> (null);
+  const [loading, setLoading] = useState(true);
+
+  const [editOpen, setEditOpen] = useState<null | { section: string }>(null);
   const [confirmOpen, setConfirmOpen] = useState<null | { action: string, payload?: any }>(null);
 
+  const router = useRouter();
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authToken");
+    router.push("/login");
+  }, [router]);
+
   useEffect(() => {
-    setUser({
-      pid: "PID-24123",
-      name: "Piyush Sontakke",
-      aadhaar: "111122223333",
-      email: "piyusha@gmail.com",
-      mobile: "+91 98765 43210",
-      createdAt: "2022-08-20",
-      dob: "2006-01-15",
-      address: "MG Road, Sector 69, Bengaluru",
-      state: "Karnataka",
-      district: "Bengaluru Urban",
-      taluka: "Bengaluru South",
-      occupation: "Software Engineer",
-      verifications: {
-        aadhaar: true,
-        mobile: true,
-        email: true,
-        digitalSignature: false,
-        ipdiPin: true
-      },
-      stats: {
-        totalProperties: 2,
-        activeTransfers: 1,
-        documentsCount: 5
-      },
-      documents: [
-        { id: "d1", name: "Sale Deed", type: "Sale Deed", link: "#" },
-        { id: "d2", name: "RTC", type: "RTC", link: "#" }
-      ],
-      activity: [
-        { id: 1, text: "Logged in from Chrome, Bengaluru", time: "2025-11-18 09:21" },
-        { id: 2, text: "Started Transfer Request PRID-KA-BLR-001", time: "2025-11-12 14:02" },
-      ]
-    });
-  }, []);
+    const token = localStorage.getItem("authToken");
 
-  if (!user) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    if (!token || token === "undefined" || token === "null") {
+      router.push("/login");
+      return;
+    }
 
+    const fetchData = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/api/user/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch user data");
+
+        const dbData = await res.json();
+        const formattedUser = {
+          pid: `PID:IND-${dbData.aadhaar ? dbData.aadhaar.slice(-4) : '0000'}`,
+          name: `${dbData.first_name} ${dbData.last_name}`,
+          aadhaar: dbData.aadhaar || "",
+          email: dbData.email,
+          mobile: dbData.mobile || "Not Registered",
+          address: dbData.address || "Address not updated",
+          dob: dbData.dob || "Not set",
+          state: "Maharashtra",
+          occupation: "Citizen",
+          verifications: {
+            aadhaar: true,
+            mobile: !!dbData.mobile,
+            email: true
+          },
+          stats: {
+            totalProperties: dbData.properties?.length || 0,
+            pendingTransfers: dbData.pending_transfers || 0
+          },
+          documents: dbData.documents || [],
+          activity: dbData.recentActivity || []
+        };
+
+        setUser(formattedUser);
+        setUser(formattedUser);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#eef2ff]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+          <p className="text-gray-500 font-medium">Loading Profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f7ff]">
       <Header title="Profile" subtitle="IPDI — Your digital identity" />

@@ -84,7 +84,7 @@ export default function LoginForm() {
           console.log("Login successful:", data);
 
           localStorage.setItem("authToken", data.token);
-          router.push("/");
+          router.push("/dashboard");
 
       } else {
           const contentType = response.headers.get("content-type");

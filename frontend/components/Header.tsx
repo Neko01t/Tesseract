@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -23,10 +24,16 @@ export default function Header({
   user?: string;
   onToggleSidebar?: () => void;
 }) {
+  const router  = useRouter()
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const notifRef = useRef<HTMLDivElement | null>(null);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authToken");
+    router.push("/login");
+  }, [router]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -46,7 +53,6 @@ export default function Header({
       <div className="w-full px-4 md:px-6 h-16 flex items-center justify-between">
 
         <div className="flex items-center gap-4">
-
 
           <div className="flex items-center gap-3">
             <img
@@ -111,7 +117,7 @@ export default function Header({
           <div ref={menuRef} className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-blue-50 border border-blue-100 
+              className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-blue-50 border border-blue-100
                          rounded-md transition"
             >
               <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
@@ -151,6 +157,7 @@ export default function Header({
 
                     <li className="border-t border-gray-200 mt-1">
                       <button
+                        onClick={handleLogout}
                         className="w-full text-left px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 transition"
                       >
                         <LogOut size={18} /> Logout

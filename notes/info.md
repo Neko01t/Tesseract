@@ -1,4 +1,4 @@
-🟩 1. Blockchain Use in IDPI — HIGH LEVEL
+1. Blockchain Use in IDPI — HIGH LEVEL
 
 In the IDPI system, blockchain is used to maintain a tamper-proof, transparent, append-only history of:
 1:Property block creation
@@ -8,7 +8,7 @@ In the IDPI system, blockchain is used to maintain a tamper-proof, transparent, 
 5:Any updates to property metadata
 6:Only the hashes and essential transaction data are stored on blockchain, not the entire documents.
 
-🧱 2. What Blockchain Stores
+2. What Blockchain Stores
 
 ✔ Hash of property block (SHA-256)
 ✔ Owner User-ID (hashed / anonymized)
@@ -19,7 +19,7 @@ In the IDPI system, blockchain is used to maintain a tamper-proof, transparent, 
 
 These remain off-chain for speed and cost reasons.
 
-🟦 3. When Blockchain Is Used (Flow)
+3. When Blockchain Is Used (Flow)
 
 ✔ Step 1: User submits details + documents
 The system collects:
@@ -49,7 +49,7 @@ A digital block is created with:
   Metadata,
   Timestamp
 }
-🔐 Hash of this object is generated → recorded on blockchain
+Hash of this object is generated → recorded on blockchain
 ➡ Blockchain involvement starts here
 
 ✔ Step 4: Property Block is Linked to User
@@ -95,7 +95,7 @@ This chain becomes:
 Block 1 → Block 2 → Block 3 → Block 4 → ...
 Representing the entire property history.
 
-🟨 4. Benefits for the IDPI System
+4. Benefits for the IDPI System
 ✔ Tamper-Proof Ownership
 Ownership history cannot be changed once written.
 ✔ Fraud Prevention
@@ -115,7 +115,7 @@ Mortgage lock
 Encumbrance update
 Release events
 
-📘 5. Final Summary 
+5. Final Summary 
 
 Blockchain is used to record immutable ownership events in IDPI.
 Every property block, document hash, transfer event, and ownership change generates a new blockchain entry.

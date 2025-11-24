@@ -10,36 +10,36 @@ In the IDPI system, blockchain is used to maintain a tamper-proof, transparent, 
 
 2. What Blockchain Stores
 
-✔ Hash of property block (SHA-256)
-✔ Owner User-ID (hashed / anonymized)
-✔ Timestamp
-✔ Previous block reference (to maintain chain)
-✔ Event type (create / transfer / update)
-✔ Registrar/authority digital signature
+-  Hash of property block (SHA-256)
+-  Owner User-ID (hashed / anonymized)
+-  Timestamp
+-  Previous block reference (to maintain chain)
+-  Event type (create / transfer / update)
+-  Registrar/authority digital signature
 
 These remain off-chain for speed and cost reasons.
 
 3. When Blockchain Is Used (Flow)
 
-✔ Step 1: User submits details + documents
+-  Step 1: User submits details + documents
 The system collects:
 Location
 Survey info
 Document set
 Owner details
 Other metadata
-➡ No blockchain yet.
+; No blockchain yet.
 
-✔ Step 2: System verifies documents
+- Step 2: System verifies documents
 Original deed
 Tax receipts
 Identity/KYC
 Land boundaries
 Mutation status
 Once verified → system constructs a Property Block.
-➡ No blockchain yet.
+; No blockchain yet.
 
-✔ Step 3: Property Block Creation
+- Step 3: Property Block Creation
 A digital block is created with:
 {
   Property-ID,
@@ -50,9 +50,9 @@ A digital block is created with:
   Timestamp
 }
 Hash of this object is generated → recorded on blockchain
-➡ Blockchain involvement starts here
+; Blockchain involvement starts here
 
-✔ Step 4: Property Block is Linked to User
+- Step 4: Property Block is Linked to User
 The system records the ownership on-chain:
 Transaction:
   event: "CREATE_PROPERTY"
@@ -63,7 +63,7 @@ Transaction:
   timestamp: t
 This becomes an immutable ledger entry.
 
-✔ Step 5: Future Ownership Change (Transfer)
+- Step 5: Future Ownership Change (Transfer)
 When user A → user B:
 Buyer requests transfer
 Seller approves
@@ -80,9 +80,9 @@ System creates a NEW block:
 }
 Hash is placed on blockchain
 Block links to previous by using prevHash
-➡ This forms the ownership chain
+; This forms the ownership chain
 
-✔ Step 6: Entire Property History = On-chain Ledger
+- Step 6: Entire Property History = On-chain Ledger
 Every event generates a new blockchain entry:
 Creation
 Verification
@@ -96,19 +96,19 @@ Block 1 → Block 2 → Block 3 → Block 4 → ...
 Representing the entire property history.
 
 4. Benefits for the IDPI System
-✔ Tamper-Proof Ownership
+- Tamper-Proof Ownership
 Ownership history cannot be changed once written.
-✔ Fraud Prevention
+- Fraud Prevention
 Fake deeds fail hash verification.
-✔ Fully Transparent History
+- Fully Transparent History
 Anyone can trace full ownership timeline.
-✔ Distributed Trust
+- Distributed Trust
 Multiple government bodies run validating nodes:
 State registrars
 Local municipalities
 Revenue departments
 Central authority
-✔ Automated Processes
+- Automated Processes
 Smart contracts handle:
 Property transfer
 Mortgage lock
